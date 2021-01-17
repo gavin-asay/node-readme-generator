@@ -63,7 +63,7 @@ const questions = [
 	{
 		type: 'input',
 		name: 'contributing',
-		message: 'Enter a list of contributors. Separate entries with commas.',
+		message: 'Enter a list of contributors. Separate entries with semicolons.',
 	},
 	{
 		type: 'confirm',
