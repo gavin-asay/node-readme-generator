@@ -1,8 +1,7 @@
-// TODO: Include packages needed for this application
 const fs = require('fs');
 const inquirer = require('inquirer');
-const generateMarkdown = require('./generateMarkdown.js');
-// TODO: Create an array of questions for user input
+const generateMarkdown = require('./utils/generateMarkdown.js');
+
 const questions = [
 	{
 		type: 'input',
@@ -17,6 +16,7 @@ const questions = [
 		},
 	},
 	{
+		// the editor question type allows for multiline responses, good for longer sections or markdown formatting
 		type: 'editor',
 		name: 'description',
 		message:
@@ -30,6 +30,7 @@ const questions = [
 		},
 	},
 	{
+		// some questions are made optional so as to avoid unnecessary entry into the text editor
 		type: 'confirm',
 		name: 'installPrompt',
 		default: true,
@@ -96,20 +97,31 @@ const questions = [
 			'(No license)',
 		],
 	},
+	{
+		type: 'input',
+		name: 'fileName',
+		message: 'Please enter a filename. (Default is README.md)',
+		default: 'README.md',
+	},
 ];
 
-// TODO: Create a function to write README file
 function writeToFile(fileName, data) {
 	fs.writeFile('./dist/' + fileName, data, err => {
 		if (err) throw err;
+
+		console.log(fileName + ' created successfully!');
 	});
 }
 
 // TODO: Create a function to initialize app
 function init() {
+	// rather than creating a long promise chain, generateMarkdown() handles all user responses
 	inquirer
 		.prompt(questions)
-		.then(answers => writeToFile('README.md', generateMarkdown(answers)))
+		.then(answers => {
+			if (!answers.fileName.includes('.md')) answers.fileName += '.md';
+			writeToFile(answers.fileName, generateMarkdown(answers));
+		})
 		.catch(err => console.log(err));
 }
 
